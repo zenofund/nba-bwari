@@ -318,40 +318,65 @@ export const mockAdminPayments: AdminPayment[] = [
   { id: "pay-6", memberName: "Barr. Tunde Bakare", memberNbaNumber: "NBA/ABJ/2017/0234", description: "2025 Annual Dues", amount: 50000, date: "2025-07-28", method: "bank_transfer", status: "failed", reference: "PAY-2025-001239" },
 ];
 
+export type AdminElectionPhase = "pending" | "nominations" | "voting" | "tallying" | "results";
+
 export type AdminElection = {
   id: string;
   title: string;
   description: string;
   status: "upcoming" | "active" | "completed" | "cancelled";
+  phase: AdminElectionPhase;
+  nominationDeadline: string;
   startDate: string;
   endDate: string;
   positions: string[];
   totalVotes: number;
   eligibleVoters: number;
+  isAnonymous: boolean;
 };
 
 export const mockAdminElections: AdminElection[] = [
   {
     id: "elec-1",
     title: "NBA Bwari Branch Executive Elections 2025",
-    description: "Annual election for branch executive positions for the 2025/2026 term.",
+    description: "Annual election for branch executive committee positions for the 2025/2026 term. All eligible financial members may vote.",
     status: "upcoming",
+    phase: "nominations",
+    nominationDeadline: "2025-08-01T23:59:00Z",
     startDate: "2025-08-15T08:00:00Z",
     endDate: "2025-08-15T18:00:00Z",
     positions: ["Branch Chairman", "Vice Chairman", "Secretary", "Financial Secretary", "Welfare Secretary"],
     totalVotes: 0,
     eligibleVoters: 287,
+    isAnonymous: true,
   },
   {
     id: "elec-2",
+    title: "NBA Bwari Welfare Committee By-Election 2025",
+    description: "By-election to fill two vacant positions on the branch Welfare Committee. Nominations are now open.",
+    status: "upcoming",
+    phase: "pending",
+    nominationDeadline: "2025-08-25T23:59:00Z",
+    startDate: "2025-09-05T08:00:00Z",
+    endDate: "2025-09-05T18:00:00Z",
+    positions: ["Welfare Officer", "Assistant Welfare Officer"],
+    totalVotes: 0,
+    eligibleVoters: 287,
+    isAnonymous: true,
+  },
+  {
+    id: "elec-3",
     title: "NBA National Officers Election 2024",
-    description: "National election for NBA national executive positions.",
+    description: "National election for NBA national executive committee positions for the 2024/2025 term.",
     status: "completed",
+    phase: "results",
+    nominationDeadline: "2024-08-15T23:59:00Z",
     startDate: "2024-09-01T08:00:00Z",
     endDate: "2024-09-01T18:00:00Z",
     positions: ["NBA President", "General Secretary", "Treasurer"],
-    totalVotes: 195,
-    eligibleVoters: 280,
+    totalVotes: 201,
+    eligibleVoters: 298,
+    isAnonymous: true,
   },
 ];
 
@@ -367,11 +392,22 @@ export type AdminCandidate = {
 };
 
 export const mockAdminCandidates: AdminCandidate[] = [
-  { id: "cand-1", electionId: "elec-1", position: "Branch Chairman", name: "Barr. Chukwuemeka Nwosu", nbaNumber: "NBA/ABJ/2010/0234", yearCalled: 2010, manifesto: "I pledge to modernize the branch administration.", votes: 0 },
-  { id: "cand-2", electionId: "elec-1", position: "Branch Chairman", name: "Barr. Fatimah Aliyu-Bello", nbaNumber: "NBA/ABJ/2012/0891", yearCalled: 2012, manifesto: "My vision is a digitally-forward, financially transparent branch.", votes: 0 },
-  { id: "cand-3", electionId: "elec-1", position: "Branch Chairman", name: "Barr. Olumide Adeyemi", nbaNumber: "NBA/ABJ/2008/0112", yearCalled: 2008, manifesto: "Experienced legal practitioner with strong advocacy record.", votes: 0 },
-  { id: "cand-4", electionId: "elec-1", position: "Vice Chairman", name: "Barr. Ngozi Eze", nbaNumber: "NBA/ABJ/2015/0567", yearCalled: 2015, manifesto: "Dedicated to member welfare and engagement.", votes: 0 },
-  { id: "cand-5", electionId: "elec-1", position: "Secretary", name: "Barr. Tunde Bakare", nbaNumber: "NBA/ABJ/2017/0234", yearCalled: 2017, manifesto: "Committed to transparent record-keeping.", votes: 0 },
+  // elec-1: Branch Executive Elections 2025 (nominations phase)
+  { id: "cand-1",  electionId: "elec-1", position: "Branch Chairman",      name: "Barr. Chukwuemeka Nwosu",   nbaNumber: "NBA/ABJ/2010/0234", yearCalled: 2010, manifesto: "I pledge to modernize the branch administration and bring accountability.", votes: 0 },
+  { id: "cand-2",  electionId: "elec-1", position: "Branch Chairman",      name: "Barr. Fatimah Aliyu-Bello", nbaNumber: "NBA/ABJ/2012/0891", yearCalled: 2012, manifesto: "My vision is a digitally-forward, financially transparent branch.", votes: 0 },
+  { id: "cand-3",  electionId: "elec-1", position: "Branch Chairman",      name: "Barr. Olumide Adeyemi",     nbaNumber: "NBA/ABJ/2008/0112", yearCalled: 2008, manifesto: "Experienced legal practitioner with strong advocacy record.", votes: 0 },
+  { id: "cand-4",  electionId: "elec-1", position: "Vice Chairman",        name: "Barr. Ngozi Eze",           nbaNumber: "NBA/ABJ/2015/0567", yearCalled: 2015, manifesto: "Dedicated to member welfare, engagement, and inclusive governance.", votes: 0 },
+  { id: "cand-5",  electionId: "elec-1", position: "Vice Chairman",        name: "Barr. Samuel Okafor",       nbaNumber: "NBA/ABJ/2013/0789", yearCalled: 2013, manifesto: "Committed to amplifying member voices at all levels.", votes: 0 },
+  { id: "cand-6",  electionId: "elec-1", position: "Secretary",            name: "Barr. Tunde Bakare",        nbaNumber: "NBA/ABJ/2017/0234", yearCalled: 2017, manifesto: "Committed to transparent record-keeping and efficient administration.", votes: 0 },
+  { id: "cand-7",  electionId: "elec-1", position: "Financial Secretary",  name: "Barr. Aisha Mohammed",      nbaNumber: "NBA/ABJ/2020/0456", yearCalled: 2020, manifesto: "Dedicated to rigorous financial oversight and member accountability.", votes: 0 },
+  { id: "cand-8",  electionId: "elec-1", position: "Welfare Secretary",    name: "Barr. Grace Ene",           nbaNumber: "NBA/ABJ/2018/0345", yearCalled: 2018, manifesto: "Passionate about member welfare, mental health, and professional support.", votes: 0 },
+  // elec-3: NBA National Officers Election 2024 (results phase)
+  { id: "cand-9",  electionId: "elec-3", position: "NBA President",        name: "Barr. Yakubu Maikyau",      nbaNumber: "NBA/LAG/2001/0011", yearCalled: 2001, manifesto: "Justice for all Nigerians through a stronger NBA.", votes: 142 },
+  { id: "cand-10", electionId: "elec-3", position: "NBA President",        name: "Barr. Dele Adesina",        nbaNumber: "NBA/LAG/1998/0004", yearCalled: 1998, manifesto: "Rule of law and judicial independence above all.", votes: 59 },
+  { id: "cand-11", electionId: "elec-3", position: "General Secretary",    name: "Barr. Musa Aliyu",          nbaNumber: "NBA/ABJ/2005/0088", yearCalled: 2005, manifesto: "Modernising the NBA secretariat for the digital age.", votes: 113 },
+  { id: "cand-12", electionId: "elec-3", position: "General Secretary",    name: "Barr. Chioma Uche",         nbaNumber: "NBA/PH/2007/0145", yearCalled: 2007, manifesto: "Transparent, accessible, and member-first administration.", votes: 88 },
+  { id: "cand-13", electionId: "elec-3", position: "Treasurer",            name: "Barr. Emeka Eze",           nbaNumber: "NBA/ABJ/2003/0067", yearCalled: 2003, manifesto: "Fiscal discipline and complete financial transparency.", votes: 156 },
+  { id: "cand-14", electionId: "elec-3", position: "Treasurer",            name: "Barr. Halima Bello",        nbaNumber: "NBA/KAN/2006/0033", yearCalled: 2006, manifesto: "Evidence-based financial management for a stronger NBA.", votes: 45 },
 ];
 
 export type AdminContent = {

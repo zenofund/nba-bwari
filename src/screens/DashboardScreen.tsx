@@ -5,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { mockMember, mockNotifications, mockMeetings, mockFinancials } from "@/lib/mock-data";
+import { mockMember, mockNotifications, mockMeetings, mockFinancials, mockElections } from "@/lib/mock-data";
 import {
   CalendarCheck, Vote, FileText, BarChart3,
   Newspaper, Calendar, CreditCard, Shield,
   ChevronRight, CheckCircle2, XCircle, Clock,
-  Bell, MapPin, TrendingUp, Users
+  Bell, MapPin, TrendingUp, Users, ArrowRight, Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Screen } from "@/lib/store";
@@ -45,6 +45,9 @@ export function DashboardScreen() {
   const unread = mockNotifications.filter((n) => !n.read).length;
   const upcomingMeetings = mockMeetings.filter((m) => m.status === "upcoming");
   const pastMeetings = mockMeetings.filter((m) => m.status === "completed").slice(0, 3);
+  const activeElection = mockElections.find(
+    (e) => e.phase === "voting" && !e.hasVoted && e.memberEligible
+  );
 
   React.useEffect(() => {
     const t = setTimeout(() => setLoading(false), 800);
@@ -109,6 +112,48 @@ export function DashboardScreen() {
             </div>
           </div>
         </div>
+
+        {/* ── Vote Now nudge ────────────────────────────────────────────── */}
+        {activeElection && (
+          <button
+            className="w-full text-left"
+            onClick={() => dispatch({ type: "NAVIGATE", screen: "elections" })}
+          >
+            <div className="gradient-gold rounded-2xl p-5 relative overflow-hidden hover:brightness-105 transition-all">
+              <div className="absolute top-[-20px] right-[-20px] w-36 h-36 rounded-full bg-[oklch(0.18_0.07_255)]/10" />
+              <div className="flex items-center gap-4 relative z-10">
+                {/* Pulsing icon */}
+                <div className="relative shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-[oklch(0.18_0.07_255)]/15 flex items-center justify-center">
+                    <Vote className="size-7 text-[oklch(0.18_0.07_255)]" />
+                  </div>
+                  <span className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-success animate-ping" />
+                  <span className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-success" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <Zap className="size-3.5 text-[oklch(0.18_0.07_255)]" />
+                    <p className="text-xs font-bold text-[oklch(0.18_0.07_255)] uppercase tracking-wide">
+                      Voting is Open — Your vote is needed!
+                    </p>
+                  </div>
+                  <p className="text-base font-black text-[oklch(0.18_0.07_255)] leading-tight truncate">
+                    {activeElection.title}
+                  </p>
+                  <p className="text-[oklch(0.18_0.07_255)]/65 text-xs mt-1">
+                    Closes {new Date(activeElection.votingEnd).toLocaleDateString("en-NG", { weekday: "short", day: "numeric", month: "short" })} at {new Date(activeElection.votingEnd).toLocaleTimeString("en-NG", { timeStyle: "short" })} · {activeElection.positions.length} positions to vote
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="bg-[oklch(0.18_0.07_255)] text-gold px-4 py-2.5 rounded-xl flex items-center gap-2 font-bold text-sm shadow-md">
+                    Cast Your Vote
+                    <ArrowRight className="size-4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </button>
+        )}
 
         {/* ── Main 2-column grid ────────────────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
